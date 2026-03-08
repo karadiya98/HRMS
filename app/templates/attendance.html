@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS | Attendance Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #875A7B; --accent: #00A09D; --bg: #f3f4f6; --text-main: #111827; --text-sub: #4b5563; --border: #e5e7eb; --danger: #dc2626; --success: #059669; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* NAVBAR */
+        .navbar { height: 56px; background: #ffffff; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .company-brand { display: flex; align-items: center; gap: 12px; padding-right: 20px; border-right: 1px solid var(--border); }
+        .brand-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: rgb(240, 235, 235); font-weight: 700; font-family: 'Montserrat'; }
+        .brand-name { font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700; }
+        .nav-links { display: flex; gap: 15px; }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-sub);
+            font-size: 0.8rem; font-weight: 500;
+            padding: 8px 14px; border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover { color: var(--text-main); border-bottom: 2px solid var(--border); }
+
+        .nav-item.active {
+            background: transparent;
+            color: var(--primary);
+            font-weight: 900;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 5px;
+        }
+
+        /* CONTENT */
+        .content { flex: 1; padding: 32px; overflow-y: auto; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        
+        /* BUTTON STYLES */
+        .btn { border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: transform 0.1s, opacity 0.2s; color: white; }
+        .btn:active { transform: scale(0.98); }
+        .btn-checkin { background: var(--primary); }
+        .btn-checkout { background: var(--danger); }
+        .btn-disabled { background: #9ca3af; cursor: not-allowed; }
+        
+        /* TABLE STYLES */
+        .table-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f9fafb; padding: 16px; font-size: 0.75rem; color: var(--text-sub); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; }
+        td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .present { background: #d1fae5; color: #065f46; }
+
+        /* MESSAGES */
+        .messages { margin-bottom: 20px; }
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; border: 1px solid transparent; }
+        .alert-success { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+        .alert-warning { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="company-brand"><div class="brand-icon">S</div><span class="brand-name">@dmina</span></div>
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-item">Home</a>
+                <a href="{% url 'attendance' %}" class="nav-item active">Attendance</a>
+                <a href="{% url 'leave' %}" class="nav-item">Leave</a>
+                <a href="{% url 'tasks' %}" class="nav-item">Tasks</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="header-flex">
+    <h1>Attendance Logs</h1>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% if is_on_leave %}
+            <button type="button" class="btn btn-disabled" style="background: #b3822f;" disabled>On Approved Leave</button>
+        
+        {% elif not checked_in %}
+            <input type="hidden" name="action" value="check_in">
+            <button type="submit" class="btn btn-checkin">Check In</button>
+        
+        {% elif not checked_out %}
+            <input type="hidden" name="action" value="check_out">
+            <button type="submit" class="btn btn-checkout">Check Out</button>
+        
+        {% else %}
+            <button type="button" class="btn btn-disabled" disabled>Duty Completed</button>
+        {% endif %}
+    </form>
+</div>
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td><strong>{{ log.username }}</strong></td>
+                        <td>{{ log.date|date:"M d, Y" }}</td>
+                        <td>{{ log.check_in|time:"h:i A" }}</td>
+                        <td>
+                            {% if log.check_out %}
+                                {{ log.check_out|time:"h:i A" }}
+                            {% else %}
+                                <span style="color: #9ca3af;">In Progress</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="status-pill present">{{ log.status }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-sub); padding: 60px;">
+                            <p>No attendance records found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

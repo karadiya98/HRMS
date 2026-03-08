@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS | Attendance Records</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #875A7B;
+            --accent: #00A09D;
+            --bg: #f3f4f6;
+            --border: #e5e7eb;
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-dark); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            height: 60px; background: white; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+            flex-shrink: 0; z-index: 10;
+        }
+        .brand { font-family: 'Montserrat'; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .admin-badge { background: var(--accent); color:rgb(0, 0, 0); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-item { text-decoration: none; color: var(--text-light); font-size: 0.7rem; font-weight: 600; padding: 8px 14px; border-radius: 6px; }
+           .nav-item:hover {
+   
+    border-bottom: 1px solid rgb(209, 199, 199); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px; /* Adjusts space between text and underline */
+}  
+
+       .nav-item.active {
+    background: transparent; /* Removes the gray background */
+    color: var(--primary);
+    font-weight: 900;
+    font-size: .8rem;
+    border-bottom: 2px solid var(--primary); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px; /* Adjusts space between text and underline */
+}  
+        /* --- CONTENT AREA --- */
+        .main { flex: 1; padding: 30px; overflow-y: auto; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .page-header h1 { font-family: 'Montserrat'; font-size: 1.8rem; color: var(--primary); }
+
+        /* --- TABLE STYLING --- */
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        thead { background: #f9fafb; border-bottom: 2px solid var(--border); }
+        th { padding: 18px 25px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); }
+        td { padding: 18px 25px; font-size: 0.9rem; border-bottom: 1px solid #f1f5f9; color: #334155; font-weight: 500; }
+
+        /* Status Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-present { background: #dcfce7; color: var(--success); }
+        .status-absent { background: #fee2e2; color: var(--danger); }
+        .status-late { background: #fef3c7; color: var(--warning); }
+
+        .empty-state { padding: 50px; text-align: center; color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div style="width:32px; height:32px; background:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">S</div>
+            @dmin<span class="admin-badge">Admin Panel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'adminhomepage' %}" class="nav-item">Dashboard</a>
+            <a href="{% url 'adminsitedetailpage' %}" class="nav-item">Profile</a>
+            <a href="{% url 'attendance_at_admin' %}" class="nav-item active">Attendance</a>
+        </div>
+        
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h1>Attendance Live</h1>
+                    <p style="color: var(--text-light);">Showing history for <strong>{{ name }}</strong></p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                        <tr>
+                            <td>{{ record.date }}</td>
+                            <td>{{ record.check_in|time:"h:i A" }}</td>
+                            <td>
+                                {% if record.check_out %}
+                                    {{ record.check_out|time:"h:i A" }}
+                                {% else %}
+                                    <span style="color:var(--text-light)">--:--</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if record.status == 'Present' %}status-present
+                                    {% elif record.status == 'Absent' %}status-absent
+                                    {% else %}status-late{% endif %}">
+                                    {{ record.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                <h3>No records found</h3>
+                                <p>This employee has no recorded attendance yet.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

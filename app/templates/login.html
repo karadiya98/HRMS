@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS | Portal Login</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --primary:#875A7B;
+            --primary-dark:#5f3b54;
+            --accent:#00A09D;
+            --bg:#f8fafc;
+            --text-main:#0f172a;
+            --text-muted:#64748b;
+            --danger: #ef4444;
+            /* Fadu Elevation Shadow */
+            --elevate: 0 15px 35px -5px rgba(0,0,0,0.08), 0 5px 15px -5px rgba(0,0,0,0.04);
+        }
+
+        *{ box-sizing:border-box; margin: 0; padding: 0; }
+
+        body{
+            font-family:'Inter',sans-serif;
+            background:var(--bg);
+            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+            height:100vh;
+            overflow:hidden;
+        }
+
+        .app{ display:flex; height:100vh; }
+
+        /* ===== LEFT PANEL (Matching Registration) ===== */
+        .panel{
+            width:40%;
+            padding:70px;
+            background: linear-gradient(145deg,#6d4461,#2d1526);
+            color:#fff;
+            display:flex;
+            justify-content:center;
+            flex-direction:column;
+            clip-path: ellipse(100% 120% at 0% 50%);
+            box-shadow: 20px 0 80px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .panel h1{ font-family:'Montserrat'; font-size:3.2rem; line-height:1.1; }
+        .panel h1 span{ font-size:1rem; letter-spacing:4px; color:#facc15; text-transform:uppercase; display:block; margin-bottom:10px;}
+
+        /* ===== RIGHT LOGIN AREA (No Card, Only Elevation) ===== */
+        .onboarding{
+            flex:1;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:40px;
+        }
+
+        .login-content {
+            width:100%;
+            max-width:420px;
+            animation: floatIn .8s ease-out;
+        }
+
+        @keyframes floatIn{
+            from{opacity:0; transform:translateX(30px)}
+            to{opacity:1; transform:translateX(0)}
+        }
+
+        .login-header{ margin-bottom:35px; }
+        .login-header h2{ font-family:'Montserrat'; font-size:2.4rem; color:var(--primary); }
+        .login-header p{ color:var(--text-muted); font-size:1rem; margin-top: 5px;}
+
+        /* Error Messages */
+        .alert {
+            padding: 14px;
+            background: #fff;
+            border-left: 4px solid var(--danger);
+            color: var(--danger);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            box-shadow: var(--elevate);
+        }
+
+        /* ===== ROLE SWITCH (ELEVATED) ===== */
+        .role-switch{
+            display:flex;
+            background: #fff;
+            border-radius:15px;
+            padding:6px;
+            margin-bottom:30px;
+            box-shadow: var(--elevate);
+        }
+
+        .role-switch input{ display:none; }
+
+        .role-switch label{
+            flex:1;
+            text-align:center;
+            padding:12px 0;
+            font-size:.85rem;
+            font-weight:700;
+            cursor:pointer;
+            border-radius:10px;
+            color:var(--text-muted);
+            transition: 0.3s;
+        }
+
+        .role-switch input:checked + label{
+            background:var(--primary);
+            color:#fff;
+            box-shadow: 0 10px 20px rgba(135, 90, 123, 0.2);
+        }
+
+        /* ===== FLOATING FORM GROUPS ===== */
+        .form-group{ 
+            position: relative;
+            background: #fff;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            box-shadow: var(--elevate);
+            transition: 0.3s;
+        }
+
+        .form-group:focus-within {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(135, 90, 123, 0.15);
+        }
+
+        .form-group label{
+            position: absolute;
+            top: 40%;
+            left: 18px;
+            transform: translateY(-50%);
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .form-group input{
+            width:100%;
+            padding: 22px 18px 10px;
+            border-radius:16px;
+            border: none;
+            background: transparent;
+            font-size:1rem;
+            font-weight: 600;
+            color: var(--primary);
+            outline: none;
+        }
+
+        /* Float Label Animation */
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: 15px;
+            font-size: 0.65rem;
+            color: var(--accent);
+        }
+
+        /* ===== FADU BUTTON ===== */
+        .btn{
+            width:100%;
+            margin-top:15px;
+            padding:18px;
+            border:none;
+            border-radius:18px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color:white;
+            font-size:1.1rem;
+            font-weight:800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor:pointer;
+            box-shadow: 0 15px 35px rgba(135, 90, 123, 0.4);
+            transition: 0.4s;
+        }
+
+        .btn:hover{ 
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 160, 157, 0.4);
+            letter-spacing: 4px;
+        }
+
+        .footer{
+            text-align:center;
+            margin-top:35px;
+            font-size:.95rem;
+            color:var(--text-muted);
+            font-weight: 500;
+        }
+
+        .footer a{ 
+            color:var(--primary); 
+            font-weight:700; 
+            text-decoration:none; 
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 2px;
+        }
+
+        @media(max-width:1100px){
+            .panel{display:none}
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+    <div class="panel">
+        <h1><span>Welcome back</span>Employee<br>Gateway</h1>
+        <p>Access your professional dashboard, track performance, and manage your workspace in real-time.</p>
+    </div>
+
+    <div class="onboarding">
+        <div class="login-content">
+            
+            <div class="login-header">
+                <h2>Portal Login</h2>
+                <p>Authenticating into HRMS secure node.</p>
+            </div>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert">
+                    <strong>Error:</strong> {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                <div class="role-switch">
+                    <input type="radio" id="admin" name="role" value="admin" checked>
+                    <label for="admin">ADMIN</label>
+
+                    <input type="radio" id="employee" name="role" value="employee">
+                    <label for="employee">EMPLOYEE</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="loginid" name="loginid" placeholder=" " required>
+                    <label for="loginid">Login Id</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder=" " required>
+                    <label for="password">Password</label>
+                </div>
+
+                <button class="btn" type="submit">
+                    Secure Entry →
+                </button>
+            </form>
+
+            <div class="footer">
+                New to the system?
+                <a href="{% url 'cmpregister' %}">Initialize Account</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS Dashboard | Employee Suite</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #875A7B;
+            --accent: #00A09D;
+            --bg: #f3f4f6;
+            --text-main: #111827;
+            --text-sub: #4b5563;
+            --border: #e5e7eb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar { height: 56px; background: #ffffff; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .company-brand { display: flex; align-items: center; gap: 12px; padding-right: 20px; border-right: 1px solid var(--border); }
+        .brand-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: rgb(240, 235, 235); font-weight: 700; font-family: 'Montserrat'; }
+        .brand-name { font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700; }
+        .nav-links { display: flex; gap: 15px; }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-sub);
+            font-size: 0.8rem; font-weight: 500;
+            padding: 8px 14px; border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover { color: var(--text-main); border-bottom: 2px solid var(--border); }
+
+        .nav-item.active {
+            background: transparent;
+            color: var(--primary);
+            font-weight: 900;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 5px;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+
+        .profile-btn {
+            display: flex; align-items: center; gap: 10px;
+            padding: 4px 4px 4px 12px; border-radius: 20px;
+            border: 1px solid var(--border); background: white;
+        }
+
+        .profile-avatar {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #6f4b66);
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        /* --- STATS GRID --- */
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 1.5rem; font-weight: 700; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: fit-content;
+            
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white; padding: 20px;
+            border-radius: 12px; border: 1px solid var(--border);
+            background-color: var(--accent);
+           
+        }
+
+        .stat-label { font-size: 0.8rem; color: rgb(243, 235, 235); font-weight: 500; margin-bottom: 4px; display: block; }
+        .stat-value { font-size: 1.6rem; font-weight: 700; color:rgb(231, 229, 229);align-items: center;justify-content: center;}
+
+        /* --- EMPLOYEE DIRECTORY --- */
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
+
+        .employee-grid {
+    background-color: rgb(255, 255, 255);
+    padding: 20px; /* Increased padding for better visual balance with elevation */
+    border-radius: 20px;
+    
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+
+    /* --- ELEVATION STYLES --- */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border to define the edge */
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+        0 10px 15px -3px rgba(0, 0, 0, 0.08); /* Modern, soft shadow */
+}
+
+/* Base card style (For everyone) */
+.emp-card {
+    background:#f7f7f7;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 24px 15px;
+    text-align: center;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.2s ease;
+    font-size: small;
+    color: rgb(48, 47, 47);
+    display: block; /* Ensures proper box sizing */
+
+    /* Standard elevation for all cards */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}
+.emp-name{
+    color: var(--text-main);
+    font-weight: 800;
+    font-size: medium;
+}
+.emp-role{
+    color: rgb(29, 28, 28);
+    font-weight: 500;
+    font-size: small;
+}
+
+.emp-card.is-clickable {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 24px 15px;
+    text-align: center;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+    display: block; /* Ensures proper box sizing */
+    color: black;
+    font-size: medium;
+    
+    /* Standard elevation for all cards */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}
+
+/* HOVER & ELEVATION: Only for the clickable card */
+.emp-card.is-clickable:hover {
+    transform: translate(8px, -8px);
+    box-shadow: -8px 12px 20px rgba(0,0,0,0.08);
+    border-color: var(--accent);
+    background: #d9e9e9;
+    border-width: 2px;
+    cursor: pointer;
+}
+
+/* PHOTO SCALE: Only for the clickable card */
+.emp-card.is-clickable:hover .emp-photo {
+    border-color: var(--accent);
+    background: white;
+    width: 85px;
+    height: 85px;
+}
+
+/* Static photo style for all */
+.emp-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 40%;
+    padding: 4px;
+    background: #f3f3f3;
+    margin: 0 auto 12px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}        
+
+
+
+        /* --- STATUS BADGES --- */
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            right: 8px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .badge-present { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .badge-absent { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .badge-leave { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+        /* --- RIGHT SIDEBAR --- */
+        .right-sidebar {
+            width: 300px;
+            background: #ffffff;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section { margin-bottom: 30px; }
+        .sidebar-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); }
+
+        .announcement-card {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+        .announcement-card h4 { font-size: 0.8rem; margin-bottom: 4px; }
+        .announcement-card p { font-size: 0.7rem; color: var(--text-sub); line-height: 1.4; }
+
+        .event-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .event-date {
+            width: 40px; height: 40px; background: var(--bg); border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-weight: 700; color: var(--primary); font-size: 0.65rem;
+        }
+        .event-info h5 { font-size: 0.75rem; margin-bottom: 1px; }
+        .event-info span { font-size: 0.65rem; color: var(--text-sub); }
+
+                /* ================= DROPDOWN ================= */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 180px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    padding: 8px;
+    z-index: 100;
+}
+
+.dropdown-item {
+    text-decoration: none;
+    color: var(--text-main);
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #f3f4f6;
+}
+
+.dropdown-item.logout-link {
+    color: #dc2626; /* Red color for logout */
+    font-weight: 600;
+}
+
+.show {
+    display: flex;
+}
+
+
+/* confirmation css  */
+/* --- CUSTOM DIALOG BOX --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 2000; animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: white; padding: 32px; border-radius: 20px;
+    width: 90%; max-width: 360px; text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    transform: scale(0.9); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.modal-icon {
+    width: 50px; height: 50px; background: #fee2e2; color: #dc2626;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; font-size: 1.5rem; font-weight: bold;
+}
+
+.modal-content h3 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-main); }
+.modal-content p { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 24px; }
+
+.modal-actions { display: flex; gap: 12px; }
+.modal-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 10px;
+    font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+
+.btn-cancel { background: #f3f4f6; color: var(--text-main); }
+.btn-cancel:hover { background: #e5e7eb; }
+
+.btn-confirm { background: #dc2626; color: white; }
+.btn-confirm:hover { background: #b91c1c; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { to { transform: scale(1); } }
+
+    </style>
+</head>
+<body>
+
+    {% load static %}
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="company-brand">
+                <div class="brand-icon">S</div>
+                <span class="brand-name">@dmina</span>
+            </div>
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-item active">Home</a>
+                <a href="{% url 'attendance' %}" class="nav-item">Attendance</a>
+                <a href="{% url 'leave' %}" class="nav-item">Leave</a>
+                <a href="{% url 'tasks' %}" class="nav-item">Tasks</a>
+            </div>
+        </div>
+        
+        <!-- -------------------------- -->
+
+        <div class="nav-right">
+    <div class="profile-container" style="position: relative;">
+        <div class="profile-btn" onclick="toggleDropdown()" style="cursor: pointer;">
+            <span class="profile-name">{{globalusername}}</span>
+            <div class="profile-avatar">{{ globalusername|slice:":1"|upper }}</div>
+        </div>
+        
+        <div id="profileDropdown" class="dropdown-menu">
+            <a href="{% url 'profile'%}" class="dropdown-item">My Profile</a>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 5px 0;">
+            <a href="javascript:void(0)" class="dropdown-item logout-link" onclick="confirmLogout()">Logout</a>
+        </div>
+    </div>
+        </div>
+    </nav>
+
+
+    <div class="main-container">
+        <main class="content">
+            <div class="page-header">
+                <h1>Employee Overview</h1>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total Employees</span>
+                    <div class="stat-value">{{ emp.count }}</div>
+                </div>
+               
+            </div>
+
+            <h2 class="section-title">Team Directory</h2>
+
+<div class="employee-grid">
+    {% for emp in emp %}
+        
+        {% if emp.fullname == globalusername %}
+            <a href="{% url 'profile' %}" class="emp-card is-clickable">
+                
+                {% if status == "Present" %}
+                    <span class="status-badge badge-present">Present</span>
+                {% elif status == "Leave" %}
+                    <span class="status-badge badge-leave">On Leave</span>
+                {% else %}
+                    <span class="status-badge badge-absent">Absent</span>
+                {% endif %}
+
+                <div class="emp-photo" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                    {{ emp.fullname|slice:":1"|upper }}
+                </div>
+                <div class="emp-name">{{ emp.fullname }}</div>
+                <div class="emp-role">{{ emp.designation }}</div>
+            </a>
+
+        {% else %}
+            <div class="emp-card" style="cursor: default; filter: grayscale(0.2); opacity: 0.8;">
+                <div class="emp-photo" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; color: var(--text-sub); background: #eee;">
+                    {{ emp.fullname|slice:":1"|upper }}
+                </div>
+                <div class="emp-name">{{ emp.fullname }}</div>
+                <div class="emp-role">{{ emp.designation }}</div>
+            </div>
+        {% endif %}
+
+    {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px; background: white; border-radius: 20px; border: 2px dashed var(--border);">
+            <p style="color: var(--text-sub);">No employees found.</p>
+        </div>
+    {% endfor %}
+</div>
+
+</main>
+
+        <aside class="right-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Announcements</div>
+                <div class="announcement-card">
+                    <h4>Company Town Hall</h4>
+                    <p>Meeting scheduled for Friday at 10 AM in the main hall.</p>
+                </div>
+                <div class="announcement-card" style="border-left-color: var(--accent);">
+                    <h4>System Maintenance</h4>
+                    <p>The HR Portal will be down for 2 hours this Sunday.</p>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Holidays</div>
+                <div class="event-item">
+                    <div class="event-date"><span>anum</span><span>1</span></div>
+                    <div class="event-info"><h5>Republic Day</h5><span>National Holiday</span></div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date" style="color: #db2777;"><span>FEB</span><span>14</span></div>
+                    <div class="event-info"><h5>Office Social</h5><span>Team Building Event</span></div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Links</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <span style="padding: 4px 8px; background: #eee; border-radius: 4px; font-size: 0.65rem; cursor: pointer;">Payroll</span>
+                    <span style="padding: 4px 8px; background: #eee; border-radius: 4px; font-size: 0.65rem; cursor: pointer;">Policy Doc</span>
+                    <span style="padding: 4px 8px; background: #eee; border-radius: 4px; font-size: 0.65rem; cursor: pointer;">Support</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+<!-- confirmation box -->
+ <div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-icon">!</div>
+        <h3>Confirm Logout</h3>
+        <p>Are you sure you want to end your Day?</p>
+        <div class="modal-actions">
+            <button class="modal-btn btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+            <button class="modal-btn btn-confirm" onclick="proceedLogout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        
+    // Toggle the profile dropdown
+function toggleDropdown() {
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('show');
+}
+
+
+
+// Close dropdown if user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.closest('.profile-container')) {
+        const dropdown = document.getElementById('profileDropdown');
+        if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    }
+}
+
+// confirmation logic is below 
+
+// Open the custom modal
+function confirmLogout() {
+    document.getElementById('logoutModal').style.display = 'flex';
+}
+
+// Close the custom modal
+function closeLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'none';
+}
+
+// Logic if "Logout" is clicked inside the modal
+function proceedLogout() {
+    window.location.href = "{% url 'login' %}"; // Redirects to your backend logout view
+}
+
+// Update your window.onclick to also close the modal if clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('logoutModal');
+    if (event.target == modal) {
+        closeLogoutModal();
+    }
+    if (!event.target.closest('.profile-container')) {
+        const dropdown = document.getElementById('profileDropdown');
+        if (dropdown && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    }
+}
+    </script>
+
+</body>
+</html>

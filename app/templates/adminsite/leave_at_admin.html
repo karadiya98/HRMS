@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS | Admin Leave Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #875A7B;
+            --accent: #00A09D;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 0; }
+        
+        /* --- RESTORED ORIGINAL NAVBAR --- */
+        .navbar {
+            height: 60px; background: rgb(255, 255, 255); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+            flex-shrink: 0; z-index: 10;
+        }
+        .brand { font-family: 'Montserrat'; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .admin-badge { background: var(--accent); color:black; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .nav-avatar { width: 35px; height: 35px; border-radius: 8px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+        .brand-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-family: 'Montserrat'; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-item { text-decoration: none; color: #6b7280; font-size: 0.7rem; font-weight: 600; padding: 8px 14px; border-radius: 6px; transition: all 0.2s; }
+          .nav-item:hover {
+   
+    border-bottom: 1px solid rgb(209, 199, 199); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px; /* Adjusts space between text and underline */
+}  
+
+       .nav-item.active {
+    background: transparent; /* Removes the gray background */
+    color: var(--primary);
+    font-weight: 900;
+    font-size: .8rem;
+    border-bottom: 2px solid var(--primary); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px;
+
+}  
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .header { margin-bottom: 30px; }
+        .header h1 { font-family: 'Montserrat'; color: var(--primary); font-size: 1.8rem; }
+
+        /* Leave Card */
+        .leave-card {
+            background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .leave-info h3 { margin: 10 0 8px 0; color: var(--primary); font-size: 1.2rem; }
+        .leave-info p { margin: 4px 0; color: #64748b; font-size: 0.9rem; }
+        .reason { background: #f1f5f9; padding: 10px; border-radius: 8px; font-style: italic; margin-top: 10px; font-size: 0.85rem; }
+
+        /* Badges */
+        .badge { padding: 7px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+         }
+        .Pending { background: #fffbeb; color: var(--warning); border: 1px solid #fde68a; }
+        .Approved { background: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; }
+        .Rejected { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+
+        /* Action Buttons */
+        .btn-group { display: flex; gap: 10px; }
+        .btn { 
+            padding: 10px 20px; border: none; border-radius: 10px; 
+            font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.8rem; 
+        }
+        .btn-approve { background: var(--success); color: white; }
+        .btn-reject { background: var(--danger); color: white; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">S</div>
+            @dmin<span class="admin-badge">Admin Panel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'adminhomepage' %}" class="nav-item">Dashboard</a>
+            <a href="{% url 'adminsitedetailpage' %}" class="nav-item">Profile</a>
+            <a href="{% url 'leave_at_admin' %}" class="nav-item active">Leave</a>
+        </div>
+        
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Leave Requests</h1>
+            <p>Managing records for <strong>{{ name }}</strong></p>
+        </div>
+
+        {% for leave in leaves %}
+        <div class="leave-card">
+            <div class="leave-info">
+                <span class="badge {{ leave.status }}">{{ leave.status }}</span>
+                <h3>{{ leave.leave_type }} Leave</h3>
+                <p><strong>Period:</strong> {{ leave.start_date }} to {{ leave.end_date }}</p>
+                <div class="reason">Reason :- {{ leave.reason }}</div>
+            </div>
+
+            <div class="btn-group">
+                {% if leave.status == 'Pending' %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="leave_id" value="{{ leave.id }}">
+                        <input type="hidden" name="status" value="Approved">
+                        <button type="submit" class="btn btn-approve">APPROVE</button>
+                    </form>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="leave_id" value="{{ leave.id }}">
+                        <input type="hidden" name="status" value="Rejected">
+                        <button type="submit" class="btn btn-reject">REJECT</button>
+                    </form>
+                {% else %}
+                    <span style="color: #94a3b8; font-weight: 700; font-size: 0.8rem;">ACTION COMPLETED</span>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="leave-card" style="justify-content: center;">
+            <p>No leave requests found for this employee.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRMS | Admin Workspace Setup</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --primary:#875A7B;
+    --primary-dark:#5f3b54;
+    --accent:#00A09D;
+    --bg:#f8fafc;
+    --text-main:#0f172a;
+    --text-muted:#64748b;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    height:100vh;
+    overflow:hidden;
+}
+
+/* ===== APP LAYOUT ===== */
+.app{
+    display:flex;
+    height:100vh;
+}
+
+/* ===== LEFT PANEL (UNCHANGED CORE, ENHANCED FEEL) ===== */
+.panel{
+    width:45%;
+    padding:70px;
+    background: linear-gradient(145deg,#6d4461,#2d1526);
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+    clip-path: ellipse(100% 120% at 0% 50%);
+}
+
+.panel h1{
+    font-family:'Montserrat';
+    font-size:3.2rem;
+    line-height:1.1;
+}
+.panel h1 span{
+    font-size:1rem;
+    letter-spacing:4px;
+    color:#facc15;
+    text-transform:uppercase;
+}
+
+.panel p{
+    margin-top:20px;
+    opacity:.9;
+    max-width:420px;
+}
+
+/* ===== FEATURE GLASS ===== */
+.feature-box{
+    margin-top:50px;
+    background:rgba(255,255,255,.08);
+    border-radius:22px;
+    padding:35px;
+    backdrop-filter: blur(15px);
+}
+
+.feature-item{
+    display:flex;
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.feature-icon{
+    width:46px;
+    height:46px;
+    background:var(--accent);
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.3rem;
+    box-shadow:0 10px 25px rgba(0,160,157,.35);
+}
+
+/* ===== RIGHT SIDE ===== */
+.onboarding{
+    flex:1;
+    background: radial-gradient(circle at top right,#e8f7f7,#ffffff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+}
+
+/* ===== CARD ===== */
+.card{
+    width:100%;
+    max-width:540px;
+    background:rgba(255,255,255,.7);
+    backdrop-filter: blur(20px);
+    border-radius:28px;
+    padding:45px;
+    box-shadow:0 30px 80px rgba(0,0,0,.12);
+    animation:floatIn .9s ease;
+}
+
+@keyframes floatIn{
+    from{opacity:0;transform:translateY(30px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.card h2{
+    font-family:'Montserrat';
+    font-size:2.2rem;
+    color:var(--primary);
+}
+.sub{
+    margin-top:6px;
+    color:var(--text-muted);
+}
+
+/* ===== FLOATING FORM ===== */
+form{margin-top:35px}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+}
+
+.form-group{
+    position:relative;
+}
+
+.form-group input{
+    width:100%;
+    padding:16px 14px;
+    border-radius:14px;
+    border:1.8px solid #e2e8f0;
+    background:rgba(255,255,255,.9);
+    font-size:1rem;
+}
+
+.form-group label{
+    position:absolute;
+    top:50%;
+    left:14px;
+    transform:translateY(-50%);
+    font-size:.75rem;
+    color:#94a3b8;
+    pointer-events:none;
+    transition:.3s ease;
+    background:#fff;
+    padding:0 6px;
+}
+
+.form-group input:focus,
+.form-group input:valid{
+    border-color:var(--primary);
+}
+
+.form-group input:focus + label,
+.form-group input:valid + label{
+    top:-7px;
+    font-size:.65rem;
+    color:var(--primary);
+}
+
+/* ===== BUTTON ===== */
+.btn{
+    margin-top:45px;
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:#fff;
+    font-size:1.15rem;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 20px 45px rgba(0,0,0,.25);
+    transition:.35s ease;
+}
+
+.btn:hover{
+    transform:translateY(-2px) scale(1.02);
+    box-shadow:0 30px 60px rgba(0,0,0,.3);
+}
+
+/* ===== LINK ===== */
+.link{
+    margin-top:30px;
+    text-align:center;
+    font-size:.95rem;
+}
+.link a{
+    color:var(--primary);
+    font-weight:700;
+    text-decoration:none;
+}
+.link a:hover{color:var(--accent)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){
+    .panel{display:none}
+    .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+    <div class="panel">
+        <h1><span>Next-Gen</span>HRMS Workspace</h1>
+        <p>Automate HR workflows, manage teams, and gain real-time insights from one secure platform.</p>
+
+        <div class="feature-box">
+            <div class="feature-item">
+                <div class="feature-icon">🚀</div>
+                <div>
+                    <strong>Instant Setup</strong><br>
+                    <small>Workspace ready in seconds</small>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔐</div>
+                <div>
+                    <strong>Enterprise Security</strong><br>
+                    <small>Isolated & encrypted data</small>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🚀</div>
+                <div>
+                    <strong>Instant Setup</strong><br>
+                    <small>Workspace ready in seconds</small>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔐</div>
+                <div>
+                    <strong>Enterprise Security</strong><br>
+                    <small>Isolated & encrypted data</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="onboarding">
+        <div class="card">
+            <h2>Create Workspace</h2>
+            <p class="sub">Register your organization admin account</p>
+
+            <form method="POST" action="{% url 'cmpregister' %}">
+                {% csrf_token %}
+                <div class="grid">
+                    <div class="form-group">
+                        <input type="text" name="companyname" required>
+                        <label>Organization</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="industryname" required>
+                        <label>Industry</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="adminname" required>
+                        <label>Username</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="adminemail" required>
+                        <label>Email</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" required>
+                        <label>Password</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="confirm_password" required>
+                        <label>Confirm Password</label>
+                    </div>
+                </div>
+
+                <button class="btn">Launch Workspace →</button>
+            </form>
+
+            <div class="link">
+                Already onboarded? <a href="{% url 'login' %}">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

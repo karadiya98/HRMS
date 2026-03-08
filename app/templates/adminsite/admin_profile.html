@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Workspace | {{ admin.adminname }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #875A7B;
+            --accent: #00A09D;
+            --surface: #ffffff;
+            --body-bg: #f3f4f6;
+            --text-main: #111827;
+            --text-sub: #6b7280;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--body-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .workspace-card {
+            width: 95%;
+            max-width: 1000px;
+            background: var(--surface);
+            border-radius: 32px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.08);
+        }
+
+        /* LEFT SIDEBAR */
+        .sidebar {
+            background: linear-gradient(135deg, #2d1526 0%, #875A7B 100%);
+            padding: 50px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .avatar-box {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .sidebar h2 { margin: 0; font-size: 1.5rem; letter-spacing: -0.5px; }
+        .sidebar p { opacity: 0.7; font-size: 0.9rem; margin-top: 8px; }
+
+        .back-link {
+            margin-top: auto;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 12px 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+        .back-link:hover { background: rgba(255,255,255,0.1); }
+
+        /* RIGHT CONTENT */
+        .main-content { padding: 60px; }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .status-pill {
+            background: #ecfdf5;
+            color: #059669;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .data-point {
+            background: #f9fafb;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .data-point span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .data-point strong {
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .actions {
+            margin-top: 50px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(135, 90, 123, 0.2); }
+        .btn-secondary { background: #e2e8f0; color: #475569; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+
+    </style>
+</head>
+<body>
+
+<div class="workspace-card">
+    <div class="sidebar">
+        <div class="avatar-box">{{ initial }}</div>
+        <h2>{{ admin.adminname }}</h2>
+        <p>Organization Head</p>
+        
+        <a href="javascript:history.back()" class="back-link">← Return to Dashboard</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header-row">
+            <h1 style="margin:0; font-size: 1.8rem;">Profile Settings</h1>
+            <!-- <div class="status-pill">● {{ status }}</div> -->
+             
+        </div>
+
+        <div class="grid-info">
+            <div class="data-point">
+                <span>Organization</span>
+                <strong>{{ admin.companyname }}</strong>
+            </div>
+            <div class="data-point">
+                <span>Industry Sector</span>
+                <strong>{{ admin.industry }}</strong>
+            </div>
+            <div class="data-point">
+                <span>Email Authority</span>
+                <strong>{{ admin.adminemail }}</strong>
+            </div>
+            <div class="data-point">
+                <span>Unique Admin ID</span>
+                <strong>{{ admin.adminid }}</strong>
+            </div>
+            <div class="data-point">
+                <span>Join Date</span>
+                <strong>{{ admin.companyregistration_date|date:"F Y" }}</strong>
+            </div>
+            <div class="data-point" style="background: #fffbeb; border-color: #fef3c7;">
+                <span>Account Tier</span>
+                <strong style="color: #b45309;">Enterprise Admin</strong>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary">Edit Global Profile</button>
+            <button class="btn btn-secondary">Security Settings</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

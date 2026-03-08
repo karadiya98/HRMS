@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nex.Hr Admin Tasks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #875A7B;
+            --primary-dark: #6a4661;
+            --accent: #00A09D; 
+            --tasks: #714B67;   
+            --leave: #E97E2E;   
+            --salary: #28a745;  
+            --bg: #f3f4f6;
+            --border: #e5e7eb;
+            --text-dark: #111827;
+            --text-light: #6b7280;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text-dark); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        /* --- RESTORED ORIGINAL NAVBAR --- */
+        .navbar {
+            height: 60px; background: rgb(255, 255, 255); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+            flex-shrink: 0; z-index: 10;
+        }
+        .brand { font-family: 'Montserrat'; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .admin-badge { background: var(--accent); color:black; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .nav-avatar { width: 35px; height: 35px; border-radius: 8px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+        .brand-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-family: 'Montserrat'; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-item { text-decoration: none; color: var(--text-light); font-size: 0.7rem; font-weight: 600; padding: 8px 14px; border-radius: 6px; transition: all 0.2s; }
+          
+        .nav-item:hover {
+   
+    border-bottom: 1px solid rgb(209, 199, 199); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px; /* Adjusts space between text and underline */
+}  
+
+       .nav-item.active {
+    background: transparent; /* Removes the gray background */
+    color: var(--primary);
+    font-weight: 900;
+    font-size: .8rem;
+    border-bottom: 2px solid var(--primary); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px; /* Adjusts space between text and underline */
+}  
+        /* --- TASK PAGE SPECIFIC STYLES --- */
+        .main-content { padding: 30px; overflow-y: auto; flex-grow: 1; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-row h1{ font-family: 'Montserrat'; font-size: 1.5rem; color: var(--primary); }
+
+        .btn-new { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        
+        .task-card { background: white; border-radius: 10px; border: 1px solid var(--border); width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; background: #f9fafb; color: var(--text-light); font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 15px; border-top: 1px solid var(--border); font-size: 0.9rem; }
+
+        .status-btn { border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+        .status-Pending { background: #fff7ed; color: #c2410c; }
+        .status-Completed { background: #f0fdf4; color: #15803d; }
+        .delete-btn { color: #dc2626; border: none; background: none; cursor: pointer; font-size: 0.8rem; }
+
+        /* Modal */
+        #taskModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal-box input, .modal-box textarea, .modal-box select { width: 100%; margin-top: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">S</div>
+            @dmin<span class="admin-badge">Admin Panel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'adminhomepage' %}" class="nav-item">Dashboard</a>
+            <a href="{% url 'adminsitedetailpage' %}" class="nav-item">Profile</a>
+            <a href="{% url 'tasks_at_admin' %}" class="nav-item active">Task</a>
+        </div>
+        
+    </nav>
+
+    <div class="main-content">
+        <div class="header-row">
+            <h1>Assign Tasks to {{globaluser_admin}}</h1>
+            <button class="btn-new" onclick="toggleModal(true)">+ Create Task</button>
+        </div>
+
+        <table class="task-card">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>GitHub</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td><strong>{{ task.title }}</strong></td>
+                    <td>{{ task.deadline }}</td>
+                    <td>
+                        <form method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_status">
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <button type="submit" class="status-btn status-{{ task.status }}">{{ task.status }}</button>
+                        </form>
+                    </td>
+                    <td>{% if task.github_url %}<a href="{{ task.github_url }}" target="_blank">View</a>{% else %}-{% endif %}</td>
+                    <td>
+                        <form method="POST" style="display:inline;" onsubmit="return confirm('Delete task?')">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="taskModal">
+        <div class="modal-box">
+            <h2>Add New Task</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create">
+                <input type="text" name="title" placeholder="Task Title" required>
+                <textarea name="description" placeholder="Description"></textarea>
+                <input type="date" name="deadline" required>
+                <select name="status">
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                </select>
+                <input type="url" name="github_url" placeholder="GitHub URL">
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button type="submit" class="btn-new" style="flex:1">Save</button>
+                    <button type="button" class="btn-new" style="flex:1; background:#9ca3af;" onclick="toggleModal(false)">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleModal(show) {
+            document.getElementById('taskModal').style.display = show ? 'flex' : 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS | Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary:#875A7B; --accent:#00A09D; --bg:#f3f4f6; --card:#ffffff; --text-main:#111827; --text-sub:#4b5563; --border:#e5e7eb; }
+        * { box-sizing:border-box; margin:0; padding:0 }
+        body { font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; color: var(--text-main); }
+
+        .back-btn { display:inline-flex; align-items:center; gap:8px; margin:24px; background:white; border:1px solid var(--border); color:var(--text-main); padding:10px 20px; border-radius:10px; font-weight:600; cursor:pointer; text-decoration:none; transition: all 0.2s; }
+        .back-btn:hover { background: var(--primary); color: white; }
+
+        .content { max-width:900px; margin:0 auto; padding:0 24px 40px; }
+
+        /* PROFILE HEADER */
+        .profile-header { background:white; border:1px solid var(--border); border-radius:16px; padding:32px; display:flex; align-items:center; gap:32px; margin-bottom:24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .avatar { width:100px; height:100px; border-radius:50%; background: linear-gradient(135deg, var(--primary), #6f4b66); color:white; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .profile-info h2 { font-size: 1.5rem; margin-bottom:4px; font-family: 'Montserrat'; }
+        .role-badge { display:inline-block; background:rgba(135,90,123,.1); color:var(--primary); font-size:.75rem; font-weight:600; padding:4px 12px; border-radius:999px; text-transform: uppercase; }
+
+        /* INFO CARD */
+        .card { background:white; border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        .card h3 { font-size:0.9rem; margin-bottom:20px; font-family:'Montserrat'; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        
+        .grid { display:grid; grid-template-columns: 1fr 1fr; gap:24px; }
+        .field label { font-size:.65rem; text-transform:uppercase; letter-spacing:.8px; color:var(--text-sub); font-weight:700; display:block; margin-bottom:6px; }
+        .field p { font-size:.95rem; color:var(--text-main); font-weight: 500; }
+
+        .btn { background:var(--primary); color:white; border:none; padding:12px 28px; border-radius:8px; font-weight:600; cursor:pointer; transition: 0.2s; }
+        .btn:hover { opacity:.9; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+<a href="{% url 'home' %}" class="back-btn">Back</a>
+
+<main class="content">
+    {% if user %}
+    <div class="profile-header">
+        <div class="avatar" id="avatar-initials">
+            {{ user.fullname|slice:":1" }}
+        </div>
+        <div class="profile-info">
+            <h2>{{ user.fullname }}</h2>
+            <span class="role-badge">{{ user.designation }}</span>
+            <p style="color:var(--text-sub); margin-top:8px; font-size: 0.9rem;">{{ user.email }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Basic Information</h3>
+        <div class="grid">
+            <div class="field">
+                <label>Full Name</label>
+                <p>{{ user.fullname }}</p>
+            </div>
+            <div class="field">
+                <label>Email Address</label>
+                <p>{{ user.email }}</p>
+            </div>
+            <div class="field">
+                <label>Designation</label>
+                <p>{{ user.designation }}</p>
+            </div>
+            <div class="field">
+                <label>Login ID</label>
+                <p>{{ user.login_id }}</p>
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <p>{{ user.password }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Organization & Employment</h3>
+        <div class="grid">
+            <div class="field">
+                <label>Company</label>
+                <p>{{ user.company.companyname }}</p>
+            </div>
+            <div class="field">
+                <label>Employee ID (Internal)</label>
+                <p>#EMP-00{{ user.emp_id }}</p>
+            </div>
+            <div class="field">
+                <label>Joining Date</label>
+                <p>{{ user.joining_date|date:"D, d M Y" }}</p>
+            </div>
+            <div class="field">
+                <label>Account Status</label>
+                <p><span style="color: var(--accent);">●</span> Active</p>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn">Edit Profile</button>
+
+    {% else %}
+    <div class="card" style="text-align: center; padding: 50px;">
+        <p>No profile data found. Please log in again.</p>
+    </div>
+    {% endif %}
+
+</main>
+
+</body>
+</html>

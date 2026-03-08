@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS | Admin Control Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #875A7B;
+            --primary-dark: #6a4661;
+            --accent: #00A09D;
+            --tasks: #714B67;
+            --leave: #E97E2E;
+            --salary: #28a745;
+            --bg: #f3f4f6;
+            --border: #e5e7eb;
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text-dark); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            height: 60px; background: white; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+            flex-shrink: 0; z-index: 10;
+        }
+        .brand { font-family: 'Montserrat'; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .admin-badge { background: var(--accent); color:rgb(0, 0, 0); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-item {
+            text-decoration: none; color: var(--text-light); font-size: 0.7rem; font-weight: 600;
+            padding: 8px 14px; border-radius: 6px; transition: 0.2s;
+        }
+
+        .nav-item:hover {
+   
+    border-bottom: 1px solid rgb(209, 199, 199); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px; /* Adjusts space between text and underline */
+}  
+
+       .nav-item.active {
+    background: transparent; /* Removes the gray background */
+    color: var(--primary);
+    font-weight: 900;
+    font-size: .8rem;
+    border-bottom: 2px solid var(--primary); /* Adds the underline */
+    border-radius: 30; /* Ensures the underline isn't rounded if you had previous styling */
+    padding-bottom: 5px; /* Adjusts space between text and underline */
+}  
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .nav-avatar { width: 35px; height: 35px; border-radius: 8px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+        /* --- MAIN CONTENT --- */
+        .main { flex: 1; padding: 30px; overflow-y: auto; }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* --- PROFILE HEADER CARD --- */
+        .profile-hero {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            border: 1px solid white;
+        }
+
+        .profile-main-avatar {
+            width: 120px; height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: white; font-weight: 800;
+            box-shadow: 0 15px 30px rgba(135, 90, 123, 0.3);
+        }
+
+        .profile-details { flex: 1; }
+        .profile-details h1 { font-family: 'Montserrat'; font-size: 2.2rem; color: var(--text-dark); margin-bottom: 5px; }
+        .profile-details .designation-tag { 
+            display: inline-block; padding: 5px 15px; background: #f1f5f9; 
+            color: var(--primary); border-radius: 99px; font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .info-item { display: flex; flex-direction: column; gap: 4px; }
+        .info-item span:first-child { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-light); letter-spacing: 1px; }
+        .info-item span:last-child { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
+
+        /* --- MODULE GRID --- */
+        .module-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 25px; 
+        }
+
+        .module-card { 
+            background: white; border-radius: 20px; padding: 30px; 
+            text-decoration: none; color: inherit; display: flex;
+            flex-direction: column; align-items: center; text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .module-card:hover { 
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .icon-circle {
+            width: 70px; height: 70px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin-bottom: 20px; transition: 0.3s;
+        }
+
+        .module-card h3 { font-family: 'Montserrat'; font-size: 1.1rem; margin-bottom: 8px; }
+        .module-card p { font-size: 0.85rem; color: var(--text-light); line-height: 1.5; }
+
+        .attendance .icon-circle { background: rgba(0, 160, 157, 0.1); color: var(--accent); }
+        .tasks .icon-circle { background: rgba(113, 75, 103, 0.1); color: var(--tasks); }
+        .leave .icon-circle { background: rgba(233, 126, 46, 0.1); color: var(--leave); }
+        .salary .icon-circle { background: rgba(40, 167, 69, 0.1); color: var(--salary); }
+
+        @media (max-width: 768px) {
+            .profile-hero { flex-direction: column; text-align: center; padding: 30px; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon" style="width:32px; height:32px; background:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white;">S</div>
+            @dmin<span class="admin-badge">Admin Panel</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'adminhomepage' %}" class="nav-item">Dashboard</a>
+            <a href="{% url 'adminsitedetailpage' %}" class="nav-item active">Profile</a>
+        </div>
+       
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            
+            {% for emp in empdata %}
+            <div class="profile-hero">
+                <div class="profile-main-avatar">
+                    {{ name|slice:":1"|upper }}
+                </div>
+                
+                <div class="profile-details">
+                    <span class="designation-tag">{{ emp.designation }}</span>
+                    <h1>{{ emp.fullname }}</h1>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span>{{ emp.email }}</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span>Login Id</span>
+                            <span>{{ emp.login_id }}</span>
+                        </div>
+
+                        
+
+                       <div class="info-item">
+                            <span>Password</span>
+                            <span>{{ emp.password}}</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span>Joining Date</span>
+                            <span>{{ emp.joining_date }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="profile-hero">
+                <p>No profile details found for {{ name }}.</p>
+            </div>
+            {% endfor %}
+
+            <div class="module-grid">
+                <a href="{% url 'attendance_at_admin' %}" class="module-card attendance">
+                    <div class="icon-circle">📅</div>
+                    <h3>Attendance</h3>
+                    <p>Track check-ins, check-outs, and daily work hours.</p>
+                </a>
+
+                <a href="{% url 'tasks_at_admin' %}" class="module-card tasks">
+                    <div class="icon-circle">✅</div>
+                    <h3>Tasks</h3>
+                    <p>Assign project milestones and monitor completion.</p>
+                </a>
+
+                <a href="{% url 'leave_at_admin' %}" class="module-card leave">
+                    <div class="icon-circle">🏖️</div>
+                    <h3>Leave</h3>
+                    <p>Review leave requests and holiday calendars.</p>
+                </a>
+
+                <a href="{% url 'salary_at_admin' %}" class="module-card salary">
+                    <div class="icon-circle">💰</div>
+                    <h3>Salary</h3>
+                    <p>Manage payroll, bonuses, and tax deductions.</p>
+                </a>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
