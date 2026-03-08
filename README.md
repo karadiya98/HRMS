@@ -15,8 +15,8 @@ Technical Integration: A unique feature allowing employees to link GitHub reposi
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
-admin id :- Ah1234 
+admin id :- Ah1234 || 
 admin pass:- 1234
 
-emp id :- empas1111
+emp id :- empas1111 || 
 emp pass:- 1111
